@@ -24,6 +24,9 @@ def send_status():
     global MY_ADDRESS
     global STATUS_MESSAGE
 
+    current_function_name = inspect.currentframe().f_globals["__name__"] + "." + inspect.currentframe().f_code.co_name
+    logging.info(f"Started executing: {current_function_name}")
+
     while True:
         for address in PEER_IPS:
             if address != MY_ADDRESS:  # Don't send a message to yourself
@@ -32,7 +35,7 @@ def send_status():
                         s.connect(address)
                         s.sendall(STATUS_MESSAGE.encode())
                 except ConnectionRefusedError:
-                    pass  # Handle the case where the peer isn't available
+                    logging.error(f"{current_function_name} - Error sending status to: {address}")
         time.sleep(10)  # Send status every 10 seconds
 
 def receive_status():
