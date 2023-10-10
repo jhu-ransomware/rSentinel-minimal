@@ -21,6 +21,9 @@ logging.info(f"My IP address: {my_ip}")
 STATUS_MESSAGE = "Alive and well"  # The status message you want to send
 
 def send_status():
+    global MY_ADDRESS
+    global STATUS_MESSAGE
+
     while True:
         for address in PEER_IPS:
             if address != MY_ADDRESS:  # Don't send a message to yourself
@@ -33,11 +36,14 @@ def send_status():
         time.sleep(10)  # Send status every 10 seconds
 
 def receive_status():
+    global MY_ADDRESS
+
     current_function_name = inspect.currentframe().f_globals["__name__"] + "." + inspect.currentframe().f_code.co_name
     logging.info(f"Started executing: {current_function_name}")
+
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind(MY_ADDRESS)
-        s.listen()
+        s.listen(10)
         logging.info(f"{current_function_name} - Waiting for receive connections")
 
         while True:
